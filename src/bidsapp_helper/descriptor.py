@@ -7,7 +7,7 @@ from typing import Any
 
 
 @dataclass
-class PipelineDescriptor:
+class BidsAppDescriptor:
     """App / pipeline descriptor representation."""
 
     app_name: str
