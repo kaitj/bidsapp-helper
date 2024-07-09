@@ -7,7 +7,7 @@ def participant_label(participants: str | None) -> str | list[str] | None:
         return None
 
     out_args = participants.split()
-    out_args = [participant.lstrip("sub-") for participant in out_args]
+    out_args = [participant.lstrip("sub-").rstrip(",") for participant in out_args]
 
     if len(out_args) == 1:
         return out_args[-1]

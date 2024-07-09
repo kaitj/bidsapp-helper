@@ -21,12 +21,8 @@ ruff = "^0.5.1"
 pdoc = "^14.5.1"
 
 [tool.pytest.ini_options]
-pythonpath = [
-  "src"
-]
-testpaths = [
-  "tests"
-]
+pythonpath = ["src"]
+testpaths = ["tests"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -64,7 +60,8 @@ target-version = "py311"
 select = ["ANN", "D", "E", "F", "I"]
 ignore = [
   "ANN101",  # self should not be annotated.
-  "ANN102"  # cls should not be annotated.
+  "ANN102",  # cls should not be annotated.
+  "D107"  # undocumented-public-init.
 ]
 fixable = ["ALL"]
 unfixable = []
@@ -74,7 +71,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = []
+"tests/*.py" = ["D", "ANN201"]
 
 [tool.ruff.format]
 quote-style = "double"
