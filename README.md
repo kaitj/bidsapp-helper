@@ -1,6 +1,6 @@
-# BIDS-app cli
+# BIDS-app helper
 
-Helper package to quickly create BIDS-app CLIs.
+Helper package to simplify creation of BIDS apps.
 
 ## Installation
 
@@ -16,7 +16,7 @@ pip install bidsapp_cli
 Get the newest development version:
 
 ```sh
-pip install git+https://github.com/kaitj/bidsapp-cli
+pip install git+https://github.com/kaitj/bidsapp-helper
 ```
 
 ## Quick start
@@ -24,7 +24,7 @@ pip install git+https://github.com/kaitj/bidsapp-cli
 Short tutorial, maybe with a
 
 ```Python
-from bidsapp_cli.parser import BidsAppArgumentParser
+from bidsapp_helper.parser import BidsAppArgumentParser
 
 parser = BidsAppArgumentParser(
     app_name="app",
@@ -32,6 +32,11 @@ parser = BidsAppArgumentParser(
 )
 args = parser.parse_args()
 ```
+
+# Features
+
+- CLI initialization
+- Pipeline descriptor
 
 ## Links or References
 

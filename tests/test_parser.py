@@ -4,7 +4,7 @@ import pathlib as pl
 
 import pytest
 
-from bidsapp_cli.parser import BidsAppArgumentParser
+from bidsapp_helper.parser import BidsAppArgumentParser
 
 
 @pytest.fixture

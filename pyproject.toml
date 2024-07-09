@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "bidsapp_cli"
+name = "bidsapp_helper"
 version = "0.1.0"
-description = "Python helper package to create BIDS-app cli parser"
+description = "Python helper package to simplify creation of BIDS apps"
 authors = ["Jason Kai <jason.kai@childmind.org>"]
 license = "MIT License"
 readme = "README.md"
-packages = [{include = "bidsapp_cli", from = "src"}]
+packages = [{include = "bidsapp_helper", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "~3.11"
@@ -61,6 +61,8 @@ select = ["ANN", "D", "E", "F", "I"]
 ignore = [
   "ANN101",  # self should not be annotated.
   "ANN102",  # cls should not be annotated.
+  "ANN204",  # ignore return type annotation for special methods
+  "D105",  # ignore missing docstring in magic methods
   "D107"  # undocumented-public-init.
 ]
 fixable = ["ALL"]
