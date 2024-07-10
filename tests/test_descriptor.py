@@ -4,15 +4,15 @@ import pathlib as pl
 
 import pytest
 
-from bidsapp_helper.descriptor import PipelineDescriptor
+from bidsapp_helper.descriptor import BidsAppDescriptor
 
 
 @pytest.fixture
-def pipeline_descriptor() -> PipelineDescriptor:
-    return PipelineDescriptor(app_name="Test App")
+def pipeline_descriptor() -> BidsAppDescriptor:
+    return BidsAppDescriptor(app_name="Test App")
 
 
-def test_descriptor_generation(pipeline_descriptor: PipelineDescriptor):
+def test_descriptor_generation(pipeline_descriptor: BidsAppDescriptor):
     descriptor = pipeline_descriptor.descriptor
     assert isinstance(descriptor, dict)
     assert descriptor["Name"] == "Test App"
@@ -25,11 +25,11 @@ def test_descriptor_generation(pipeline_descriptor: PipelineDescriptor):
 
 def test_invalid_dataset_type():
     with pytest.raises(ValueError, match="Invalid dataset type.*"):
-        PipelineDescriptor(app_name="Test App", dataset_type="other")
+        BidsAppDescriptor(app_name="Test App", dataset_type="other")
 
 
 def test_save_descriptor(
-    tmp_path: pl.Path, pipeline_descriptor: PipelineDescriptor
+    tmp_path: pl.Path, pipeline_descriptor: BidsAppDescriptor
 ) -> None:
     out_fpath = tmp_path / "pipeline_description.json"
     pipeline_descriptor.save(out_fpath)
@@ -39,7 +39,7 @@ def test_save_descriptor(
 
 def test_warning_save_descriptor(
     tmp_path: pl.Path,
-    pipeline_descriptor: PipelineDescriptor,
+    pipeline_descriptor: BidsAppDescriptor,
     capsys: pytest.CaptureFixture,
 ) -> None:
     out_fpath = tmp_path / "pipeline_description.txt"
