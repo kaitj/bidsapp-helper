@@ -24,21 +24,21 @@ class BidsAppArgumentParser:
     def _add_common_args(self) -> None:
         """Common bids arguments."""
         self.parser.add_argument(
-            "bids_dir", action="store", type=pl.Path, help="Path to BIDS dataset"
+            "bids_dir", action="store", type=pl.Path, help="path to BIDS dataset"
         )
 
         self.parser.add_argument(
             "output_dir",
             action="store",
             type=pl.Path,
-            help="Path to output directory",
+            help="path to output directory",
         )
         self.parser.add_argument(
             "analysis_level",
             metavar="analysis_level",
             type=str,
             choices=["participant"],  # Initial choices
-            help="Analysis level to be performed",
+            help="analysis level to be performed",
         )
 
     def _add_participant_args(self) -> None:
@@ -53,7 +53,7 @@ class BidsAppArgumentParser:
             metavar="participant_label",
             type=participant_label,
             default=None,
-            help="Participant(s) to include in BIDS-app",
+            help="participant(s) to include in BIDS app",
         )
         self.parser.add_argument(
             "--exclude-participant-label",
@@ -61,7 +61,7 @@ class BidsAppArgumentParser:
             metavar="exclude_participant_label",
             type=participant_label,
             default=None,
-            help="Participant(s) to exclude in BIDS-app",
+            help="participant(s) to exclude in BIDS app",
         )
 
     def update_analysis_level(self, choices: list[str]) -> None:
