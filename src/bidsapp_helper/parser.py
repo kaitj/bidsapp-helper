@@ -67,6 +67,13 @@ class BidsAppArgumentParser:
             help="Participant(s) to exclude in BIDS-app",
         )
 
+    def update_analysis_level(self, choices: list[str]) -> None:
+        """Helper to update the choices available."""
+        for action in self.parser._actions:
+            if action.dest == "analysis_level":
+                action.choices = choices
+                return
+
     def parse_args(self, args: Sequence[str] | None = None) -> Namespace:
         """Parse CLI arguments."""
         return self.parser.parse_args(args)
