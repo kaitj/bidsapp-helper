@@ -47,10 +47,7 @@ class BidsAppArgumentParser:
         Note: End-user will still have to handle how these are ultimately handled by
         the application.
         """
-        self.participant_label = self.parser.add_argument_group(
-            "Inclusion / exclusion participant label"
-        )
-        self.participant_label.add_argument(
+        self.parser.add_argument(
             "--participant-label",
             "--participant_label",
             metavar="participant_label",
@@ -58,7 +55,7 @@ class BidsAppArgumentParser:
             default=None,
             help="Participant(s) to include in BIDS-app",
         )
-        self.participant_label.add_argument(
+        self.parser.add_argument(
             "--exclude-participant-label",
             "--exclude_participant_label",
             metavar="exclude_participant_label",
