@@ -4,8 +4,6 @@ import pathlib as pl
 from argparse import ArgumentParser, Namespace
 from typing import Sequence
 
-from .type import participant_label
-
 
 class BidsAppArgumentParser:
     """BIDS-app CLI parser."""
@@ -19,7 +17,6 @@ class BidsAppArgumentParser:
             """,
         )
         self._add_common_args()
-        self._add_participant_args()
 
     def _add_common_args(self) -> None:
         """Common bids arguments."""
@@ -39,29 +36,6 @@ class BidsAppArgumentParser:
             type=str,
             choices=["participant"],  # Initial choices
             help="analysis level to be performed",
-        )
-
-    def _add_participant_args(self) -> None:
-        """Add participant-label option.
-
-        Note: End-user will still have to handle how these are ultimately handled by
-        the application.
-        """
-        self.parser.add_argument(
-            "--participant-label",
-            "--participant_label",
-            metavar="participant_label",
-            type=participant_label,
-            default=None,
-            help="participant(s) to include in BIDS app",
-        )
-        self.parser.add_argument(
-            "--exclude-participant-label",
-            "--exclude_participant_label",
-            metavar="exclude_participant_label",
-            type=participant_label,
-            default=None,
-            help="participant(s) to exclude in BIDS app",
         )
 
     def update_analysis_level(self, choices: list[str]) -> None:
