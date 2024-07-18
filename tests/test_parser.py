@@ -18,8 +18,11 @@ def bids_args() -> list[str]:
 
 
 def test_default_cli(parser: BidsAppArgumentParser, bids_args: list[str]):
-    args = parser.parse_args(bids_args)
+    args = parser.parse_args(bids_args, config=None)
 
-    assert isinstance(args.bids_dir, pl.Path)
-    assert isinstance(args.output_dir, pl.Path)
-    assert isinstance(args.analysis_level, str) and args.analysis_level == "participant"
+    assert isinstance(args["bids_dir"], pl.Path)
+    assert isinstance(args["output_dir"], pl.Path)
+    assert (
+        isinstance(args["analysis_level"], str)
+        and args["analysis_level"] == "participant"
+    )
