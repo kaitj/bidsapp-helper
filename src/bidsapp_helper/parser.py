@@ -51,7 +51,7 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
         """Retrieve argument type based on its key."""
         for action in self._actions:
             if action.dest == key:
-                return action.type
+                return bool if isinstance(action.const, bool) else action.type
         raise KeyError("Unable to find configuration key")
 
     def generate_config(self) -> dict[str, Any]:
