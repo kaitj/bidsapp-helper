@@ -3,7 +3,7 @@
 import argparse
 import pathlib as pl
 from collections.abc import Sequence
-from typing import Any, Callable, overload
+from typing import Any, Callable
 
 import yaml
 
@@ -54,18 +54,17 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
                 return bool if isinstance(action.const, bool) else action.type
         raise KeyError("Unable to find configuration key")
 
-    def generate_config(self) -> dict[str, Any]:
+    def _generate_config(self) -> None:
         """Generate config dict."""
-        config = {}
+        self.config = {}
         for action in self._actions:
             if action.dest not in {"help", "version"}:
                 try:
-                    config[action.dest] = action.type(action.default)  # type: ignore
+                    self.config[action.dest] = action.type(action.default)  # type: ignore
                 except Exception:
-                    config[action.dest] = action.default
-        return config
+                    self.config[action.dest] = action.default
 
-    def _load_config(self, config: dict[str, Any], config_fpath: pl.Path) -> None:
+    def _load_config(self, config_fpath: pl.Path) -> None:
         """Load arguments from configuration file."""
         if (config_fpath := pl.Path(config_fpath)).suffix not in [".yaml", ".yml"]:
             raise ValueError("Please provide a YAML configuration file")
@@ -77,24 +76,22 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
             for key, val in updated_attrs.items():
                 if key in {"config"}:
                     continue
-                config[key] = self._get_arg_type(key)(val)  # type: ignore
+                self.config[key] = self._get_arg_type(key)(val)  # type: ignore
 
-    @overload  # type: ignore
-    def parse_args(self, *args, config: dict[str, Any], **kwargs) -> None: ...
-
-    @overload
-    def parse_args(self, *args, config: None, **kwargs) -> dict[str, Any]: ...
-
-    def parse_args(self, *args, config: dict[str, Any] | None, **kwargs):
+    def parse_args(self, *args, **kwargs) -> dict[str, Any]:  # type: ignore
         """Parse arguments into config dict."""
+        self._generate_config()
         args = vars(super().parse_args(*args, **kwargs))
         assert isinstance(args, dict)
-        if args.get("config", None) and config:
-            self._load_config(config=config, config_fpath=args["config"])
-            for key, val in args.items():  # type: ignore
-                config[key] = val
-        else:
+
+        if not (config_fpath := args.get("config")):
             return args
+
+        self._load_config(config_fpath=config_fpath)
+        for key, val in args.items():  # type: ignore
+            self.config[key] = val
+
+        return self.config
 
     def update_analysis_level(self, choices: Sequence[str]) -> None:
         """Update analysis-level choices."""
