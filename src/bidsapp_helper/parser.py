@@ -89,7 +89,8 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
 
         self._load_config(config_fpath=config_fpath)
         for key, val in args.items():  # type: ignore
-            self.config[key] = val
+            if val and self.get_default(key) != val:
+                self.config[key] = val
 
         return self.config
 
