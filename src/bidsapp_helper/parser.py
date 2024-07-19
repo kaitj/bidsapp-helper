@@ -1,14 +1,14 @@
 """Parser-creator."""
 
+import argparse
 import pathlib as pl
-from argparse import ArgumentParser, FileType
 from collections.abc import Sequence
 from typing import Any, Callable, overload
 
 import yaml
 
 
-class BidsAppArgumentParser(ArgumentParser):
+class BidsAppArgumentParser(argparse.ArgumentParser):
     """Representation of BIDS app CLI."""
 
     def __init__(self, app_name: str, description: str, *args, **kwargs) -> None:
@@ -26,10 +26,10 @@ class BidsAppArgumentParser(ArgumentParser):
             "bids_dir",
             action="store",
             type=pl.Path,
-            help="dataset directory (bids + derivatives)",
+            help="path to dataset directory (bids + derivatives)",
         )
         self.add_argument(
-            "output_dir", action="store", type=pl.Path, help="output directory"
+            "output_dir", action="store", type=pl.Path, help="path to output directory"
         )
         self.add_argument(
             "analysis_level",
@@ -38,8 +38,16 @@ class BidsAppArgumentParser(ArgumentParser):
             choices=["participant"],  # Initial choices
             help="{%(choices)s}",
         )
+        self.add_argument(
+            "--config",
+            action="store",
+            type=pl.Path,
+            help="path to app config file",
+        )
 
-    def _get_arg_type(self, key: str) -> Callable[[str], Any] | FileType | None:
+    def _get_arg_type(
+        self, key: str
+    ) -> Callable[[str], Any] | argparse.FileType | None:
         """Retrieve argument type based on its key."""
         for action in self._actions:
             if action.dest == key:
@@ -57,7 +65,7 @@ class BidsAppArgumentParser(ArgumentParser):
                     config[action.dest] = action.default
         return config
 
-    def load_config(self, config: dict[str, Any], config_fpath: pl.Path) -> None:
+    def _load_config(self, config: dict[str, Any], config_fpath: pl.Path) -> None:
         """Load arguments from configuration file."""
         if (config_fpath := pl.Path(config_fpath)).suffix not in [".yaml", ".yml"]:
             raise ValueError("Please provide a YAML configuration file")
@@ -67,6 +75,8 @@ class BidsAppArgumentParser(ArgumentParser):
                 updated_attrs = yaml.safe_load(config_file)
 
             for key, val in updated_attrs.items():
+                if key in {"config"}:
+                    continue
                 config[key] = self._get_arg_type(key)(val)  # type: ignore
 
     @overload  # type: ignore
@@ -78,7 +88,9 @@ class BidsAppArgumentParser(ArgumentParser):
     def parse_args(self, *args, config: dict[str, Any] | None, **kwargs):
         """Parse arguments into config dict."""
         args = vars(super().parse_args(*args, **kwargs))
-        if config:
+        assert isinstance(args, dict)
+        if args.get("config", None) and config:
+            self._load_config(config=config, config_fpath=args["config"])
             for key, val in args.items():  # type: ignore
                 config[key] = val
         else:
