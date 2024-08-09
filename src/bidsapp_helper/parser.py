@@ -52,7 +52,7 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
         for action in self._actions:
             if action.dest == key:
                 return bool if isinstance(action.const, bool) else action.type
-        raise KeyError("Unable to find configuration key")
+        raise KeyError(f"Unable to find configuration key: {key}")
 
     def _generate_config(self) -> None:
         """Generate config dict."""
@@ -68,12 +68,24 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
         """Load arguments from configuration file."""
         if (config_fpath := pl.Path(config_fpath)).suffix not in [".yaml", ".yml"]:
             raise ValueError("Please provide a YAML configuration file")
+        
+        def flatten_config(cfg: dict[str, Any], parent_key: str = "") -> dict[str, str]:
+            """Recursively flatten dictionary and concatenate keys with dots."""
+            items = {}
+            for key, val in cfg.items():
+                new_key = f"{parent_key}.{key}" if parent_key else key
+                if isinstance(val, dict):
+                    items.update(flatten_config(val, new_key))
+                else:
+                    items[new_key] = val 
+            return items 
 
         if config_fpath.exists():
             with open(config_fpath, "r") as config_file:
                 updated_attrs = yaml.safe_load(config_file)
 
-            for key, val in updated_attrs.items():
+            flattened_attrs = flatten_config(updated_attrs)
+            for key, val in flattened_attrs.items():
                 if key in {"config"}:
                     continue
                 self.config[key] = self._get_arg_type(key)(val)  # type: ignore
