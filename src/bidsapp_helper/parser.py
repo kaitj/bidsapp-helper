@@ -60,7 +60,8 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
         for action in self._actions:
             if action.dest not in {"help", "version"}:
                 try:
-                    self.config[action.dest] = action.type(action.default)  # type: ignore
+                    if action.default is not None:
+                        self.config[action.dest] = action.type(action.default) # type: ignore
                 except Exception:
                     self.config[action.dest] = action.default
 
