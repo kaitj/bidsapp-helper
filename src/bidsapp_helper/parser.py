@@ -69,6 +69,7 @@ class BidsAppArgumentParser(argparse.ArgumentParser):
         """Load arguments from configuration file."""
         if (config_fpath := pl.Path(config_fpath)).suffix not in [".yaml", ".yml"]:
             raise ValueError("Please provide a YAML configuration file")
+        assert config_fpath.exists()
         
         def flatten_config(cfg: dict[str, Any], parent_key: str = "") -> dict[str, str]:
             """Recursively flatten dictionary and concatenate keys with dots."""
