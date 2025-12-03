@@ -1,5 +1,8 @@
 # BIDS-app helper
 
+> [!IMPORTANT]
+> This project is no longer maintained.
+
 Helper package to simplify creation of BIDS apps.
 
 ## Installation
